@@ -17,6 +17,8 @@ public class Team {
 
     private String name;
 
+    // N+1 테스트를 위한 즉시로딩 지정
+//    @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
     @OneToMany(mappedBy = "team")
     private List<Member> members = new ArrayList<>();
 

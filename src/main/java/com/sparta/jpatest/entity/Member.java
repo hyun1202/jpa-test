@@ -14,6 +14,7 @@ public class Member {
 
     private String name;
 
+    // 지정하지 않으면 기본으로 즉시 로딩(EAGER)
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
