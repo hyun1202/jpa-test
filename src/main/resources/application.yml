@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: "jpa-test"
+  datasource:
+    url: "jdbc:h2:~/h2/jpa-test"
+    username: sa
+    password: 1234
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+
+server:
+  port: 8081
