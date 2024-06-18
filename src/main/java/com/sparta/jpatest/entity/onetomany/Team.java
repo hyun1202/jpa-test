@@ -20,7 +20,8 @@ public class Team {
     private Long id;
     private String name;
     // 1:N 단방향
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    // member 테이블에 외래키 생성, 외래키 관리는 Team에서 함
     @JoinColumn(name = "team_id")
     private List<Member> members = new ArrayList<>();
 

@@ -13,8 +13,8 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @Column(name = "team_id", insertable = false, updatable = false)
-    private Long teamId;
+
+    // joinColumn을 관리하고 있지 않음
 
     @Builder
     public Member(String name) {

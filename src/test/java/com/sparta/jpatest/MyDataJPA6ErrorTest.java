@@ -1,3 +1,5 @@
+
+
 package com.sparta.jpatest;
 
 import com.sparta.jpatest.entity.onetomany.Member;
@@ -34,6 +36,7 @@ public class MyDataJPA6ErrorTest extends MyDataJpaTest {
     @Test
     void test1_problem() {
         // Team-Member의 관계는 oneToMany
+        // 팀에 멤버 추가
         Member oneToManyMember = Member.builder()
                 .name("oneToManyMember1")
                 .build();
@@ -42,12 +45,16 @@ public class MyDataJPA6ErrorTest extends MyDataJpaTest {
                 .name("oneToManyMember2")
                 .build();
 
-        oneToManyMemberRepository.save(oneToManyMember);
-        oneToManyMemberRepository.save(oneToManyMember2);
+//        oneToManyMemberRepository.save(oneToManyMember);
+//        oneToManyMemberRepository.save(oneToManyMember2);
 
         Team team = new Team("team");
 
-        // 1. 두 번의 update 쿼리 발생
+        entityManager.clear();
+
+        // 1.insert 두번으로 끝나면 되는데 불필요한 update 쿼리문 발생
+        // insert into one_to_many_member (name,id) values (oneToManyMember1, default)
+        // insert into one_to_many_member (name,id) values (oneToManyMember2, default)
         // update one_to_many_member set team_id=1 where id=1
         // update one_to_many_member set team_id=1 where id=2
         team.addMember(oneToManyMember);
@@ -61,8 +68,10 @@ public class MyDataJPA6ErrorTest extends MyDataJpaTest {
     @DisplayName("객체 삭제 시 update 쿼리문 추가 발생 - 멤버 삭제")
     @Test
     void test2_problem() {
+        // 데이터 삽입
         /////////////////////////////////////////
         // Team-Member의 관계는 oneToMany
+        // 팀에 멤버 추가
         Member oneToManyMember = Member.builder()
                 .name("oneToManyMember1")
                 .build();
@@ -71,18 +80,25 @@ public class MyDataJPA6ErrorTest extends MyDataJpaTest {
                 .name("oneToManyMember2")
                 .build();
 
-        oneToManyMemberRepository.save(oneToManyMember);
-        oneToManyMemberRepository.save(oneToManyMember2);
+//        oneToManyMemberRepository.save(oneToManyMember);
+//        oneToManyMemberRepository.save(oneToManyMember2);
 
         Team team = new Team("team");
 
-        // 두 번의 update 쿼리 발생
+        entityManager.clear();
+
+        // 1.insert 두번으로 끝나면 되는데 불필요한 update 쿼리문 발생
+        // insert into one_to_many_member (name,id) values (oneToManyMember1, default)
+        // insert into one_to_many_member (name,id) values (oneToManyMember2, default)
+        // update one_to_many_member set team_id=1 where id=1
+        // update one_to_many_member set team_id=1 where id=2
         team.addMember(oneToManyMember);
         team.addMember(oneToManyMember2);
 
-        Team saveTeam = oneToManyTeamRepository.save(team);
+        oneToManyTeamRepository.save(team);
 
         entityManager.flush();
+        entityManager.clear();
         ////////////////////////////////////////
 
         System.out.println("테스트 시작");
@@ -91,6 +107,7 @@ public class MyDataJPA6ErrorTest extends MyDataJpaTest {
         List<Member> members = saved.getMembers();
         // 1. Team에 있는 멤버 리스트에서 멤버 삭제
         members.removeIf(member -> member.getId().equals(1L));
+
         // 2. id가 1인 멤버 삭제
         oneToManyMemberRepository.deleteById(1L);
 
@@ -112,30 +129,27 @@ public class MyDataJPA6ErrorTest extends MyDataJpaTest {
         assertThat(findTeam.getMembers()).hasSize(1);
     }
 
-    @DisplayName("객체 저장 시 update 쿼리문 추가 발생 - 해결 실패 (ManyToOne 양방향)")
+    @DisplayName("객체 저장 시 update 쿼리문 추가 발생 - 해결 (ManyToOne 양방향)")
     @Test
     void test1_solve() {
         com.sparta.jpatest.entity
                 .Member member = com.sparta.jpatest.entity.Member
-                    .builder()
-                    .name("solveMember")
-                    .build();
+                .builder()
+                .name("solveMember")
+                .build();
 
         com.sparta.jpatest.entity.Member member2 = com.sparta.jpatest.entity.Member.builder()
                 .name("solveMember2")
                 .build();
 
-        memberRepository.save(member);
-        memberRepository.save(member2);
-
         com.sparta.jpatest.entity.
                 Team team = new com.sparta.jpatest.entity.Team("team");
 
-        // 하나의 update 쿼리가 나가지 않음..
+        entityManager.clear();
+
+        // insert 쿼리만 발생 (update 쿼리 발생 X)
         team.addMember_solve6(member);
         team.addMember_solve6(member2);
-//        member.setTeam3_problem(team);
-//        member2.setTeam3_problem(team);
 
         com.sparta.jpatest.entity.
                 Team saveTeam = teamRepository.save(team);
