@@ -19,7 +19,9 @@ public class Team {
 
     // N+1 테스트를 위한 즉시로딩 지정
 //    @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
-    @OneToMany(mappedBy = "team")
+//    @OneToMany(mappedBy = "team")
+    // 영속성 전이 테스트
+    @OneToMany(mappedBy = "team", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Member> members = new ArrayList<>();
 
     public Team() {
@@ -42,8 +44,12 @@ public class Team {
     }
 
     public void addMember(Member member) {
-
         members.add(member);
+    }
+
+    public void addMember_solve6(Member member) {
+        members.add(member);
+        member.setTeam3_problem(this);
     }
 
     public void setName(String name) {
