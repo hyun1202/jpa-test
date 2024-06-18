@@ -39,5 +39,6 @@ class MyDataJpaTest {
         entityManager.persist(member5);
 
         entityManager.clear();
+        System.out.println("============== 데이터 삽입 완료 ==============");
     }
 }
