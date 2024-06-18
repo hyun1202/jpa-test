@@ -47,7 +47,7 @@ public class MyDataJPA5ErrorTest extends MyDataJpaTest {
 //                .id(100L)   // id값이 있든 없든 상관은 없다.
                 .name("teamName")
                 .build();
-        // save()는 결국 데이터베이스에 쿼리를 날려주는 기능이 아닌, 영속성 컨텍스트에 저장
+
         Team saveTeam = teamRepository.save(team);  //persist() 호출
 
         // 영속 객체를 변경했으므로, flush()를 하니 update문 쿼리가 발생
